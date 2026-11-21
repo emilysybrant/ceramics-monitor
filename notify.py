@@ -1,5 +1,6 @@
 import json
 import os
+import urllib.error
 import urllib.request
 
 api_key = os.environ.get("RESEND_API_KEY")
@@ -43,5 +44,9 @@ request = urllib.request.Request(
     },
     method="POST",
 )
-with urllib.request.urlopen(request, timeout=30) as response:
-    print("Email sent. Resend response:", response.read().decode("utf-8", errors="replace"))
+try:
+    with urllib.request.urlopen(request, timeout=30) as response:
+        print("Email sent. Resend response:", response.read().decode("utf-8", errors="replace"))
+except urllib.error.HTTPError as error:
+    details = error.read().decode("utf-8", errors="replace")
+    raise SystemExit(f"Resend rejected the email (HTTP {error.code}): {details}")
