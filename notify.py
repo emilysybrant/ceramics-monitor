@@ -14,9 +14,9 @@ payload = {
     "to": [recipient],
     "subject": "Spring 2027 ceramics classes are posted",
     "text": (
-        "Spring 2027 appears on the Evanston Art Center ceramics page.\\n\\n"
-        "You can view the classes here: \\n"
-        "https://www.evanstonartcenter.org/school/dept/adult-classes-department/ceramics\\n\\n"
+        "Spring 2027 appears on the Evanston Art Center ceramics page.\n\n"
+        "You can view the classes here:\n"
+        "https://www.evanstonartcenter.org/school/dept/adult-classes-department/ceramics\n\n"
         "This is the one-time alert from your ceramics class monitor."
     ),
 }
