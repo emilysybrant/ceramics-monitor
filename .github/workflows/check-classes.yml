@@ -1,0 +1,38 @@
+name: Check Spring 2027 ceramics classes
+
+on:
+  schedule:
+    - cron: '*/20 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Restore alert state
+        id: alert-cache
+        uses: actions/cache@v4
+        with:
+          path: .alert-state
+          key: spring-2027-ceramics-alert-sent-v1
+
+      - name: Check ceramics page
+        id: check
+        run: python monitor.py
+
+      - name: Send notification
+        if: steps.check.outputs.spring_2027_found == 'true' && steps.alert-cache.outputs.cache-hit != 'true'
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          NOTIFY_EMAIL: [redacted]
+        run: python notify.py
+
+      - name: Record that the alert was sent
+        if: steps.check.outputs.spring_2027_found == 'true' && steps.alert-cache.outputs.cache-hit != 'true'
+        run: mkdir -p .alert-state && date -u +%FT%TZ > .alert-state/sent
