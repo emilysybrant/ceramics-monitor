@@ -5,11 +5,13 @@ import urllib.request
 
 api_key = os.environ.get("RESEND_API_KEY")
 recipient = os.environ.get("NOTIFY_EMAIL")
+second_recipient = os.environ.get("NOTIFY_EMAIL_2")
+recipients = list(dict.fromkeys(address.strip() for address in (recipient, second_recipient) if address and address.strip()))
 test_mode = os.environ.get("TEST_MODE", "").lower() == "true"
 
 if not api_key:
     raise SystemExit("Missing RESEND_API_KEY repository secret.")
-if not recipient:
+if not recipients:
     raise SystemExit("Missing NOTIFY_EMAIL.")
 
 if test_mode:
@@ -31,7 +33,7 @@ else:
 
 payload = {
     "from": "Ceramics Class Monitor <onboarding@resend.dev>",
-    "to": [recipient],
+    "to": recipients,
     "subject": subject,
     "text": message,
 }
