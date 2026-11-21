@@ -4,9 +4,19 @@ on:
   schedule:
     - cron: '17,37,57 * * * *'
   workflow_dispatch:
+    inputs:
+      test_email:
+        description: Send a test email instead of running production alert logic
+        required: false
+        type: boolean
+        default: true
 
 permissions:
   contents: read
+
+concurrency:
+  group: ceramics-monitor
+  cancel-in-progress: false
 
 jobs:
   check:
@@ -27,7 +37,7 @@ jobs:
         run: python monitor.py
 
       - name: Send test notification
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && inputs.test_email == true
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
@@ -35,12 +45,12 @@ jobs:
         run: python notify.py
 
       - name: Send notification
-        if: github.event_name == 'schedule' && steps.check.outputs.spring_2027_found == 'true' && steps.alert-cache.outputs.cache-hit != 'true'
+        if: (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.test_email == false)) && steps.check.outputs.spring_2027_found == 'true' && steps.alert-cache.outputs.cache-hit != 'true'
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
         run: python notify.py
 
       - name: Record that the alert was sent
-        if: github.event_name == 'schedule' && steps.check.outputs.spring_2027_found == 'true' && steps.alert-cache.outputs.cache-hit != 'true'
+        if: (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.test_email == false)) && steps.check.outputs.spring_2027_found == 'true' && steps.alert-cache.outputs.cache-hit != 'true'
         run: mkdir -p .alert-state && date -u +%FT%TZ > .alert-state/sent
