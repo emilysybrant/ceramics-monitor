@@ -38,6 +38,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && inputs.test_email == true
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
           NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
           NOTIFY_EMAIL_2: ${{ secrets.NOTIFY_EMAIL_2 }}
           TEST_MODE: "true"
@@ -47,6 +48,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && inputs.test_email == false && steps.check.outputs.spring_2027_found == 'true' && steps.alert-cache.outputs.cache-hit != 'true'
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
           NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
           NOTIFY_EMAIL_2: ${{ secrets.NOTIFY_EMAIL_2 }}
         run: python notify.py
