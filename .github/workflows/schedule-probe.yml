@@ -1,0 +1,20 @@
+name: Schedule probe
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Record scheduled trigger
+        run: |
+          echo "Schedule probe triggered"
+          echo "Event: ${GITHUB_EVENT_NAME}"
+          echo "UTC time: $(date -u +%FT%TZ)"
+          echo "Commit: ${GITHUB_SHA}"
