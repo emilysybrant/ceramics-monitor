@@ -39,6 +39,7 @@ jobs:
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
+          NOTIFY_EMAIL_2: ${{ secrets.NOTIFY_EMAIL_2 }}
           TEST_MODE: "true"
         run: python notify.py
 
@@ -47,6 +48,7 @@ jobs:
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
+          NOTIFY_EMAIL_2: ${{ secrets.NOTIFY_EMAIL_2 }}
         run: python notify.py
 
       - name: Record that the alert was sent
