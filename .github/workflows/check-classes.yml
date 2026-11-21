@@ -26,13 +26,21 @@ jobs:
         id: check
         run: python monitor.py
 
+      - name: Send test notification
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          NOTIFY_EMAIL: [redacted]
+          TEST_MODE: "true"
+        run: python notify.py
+
       - name: Send notification
-        if: steps.check.outputs.spring_2027_found == 'true' && steps.alert-cache.outputs.cache-hit != 'true'
+        if: github.event_name == 'schedule' && steps.check.outputs.spring_2027_found == 'true' && steps.alert-cache.outputs.cache-hit != 'true'
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           NOTIFY_EMAIL: [redacted]
         run: python notify.py
 
       - name: Record that the alert was sent
-        if: steps.check.outputs.spring_2027_found == 'true' && steps.alert-cache.outputs.cache-hit != 'true'
+        if: github.event_name == 'schedule' && steps.check.outputs.spring_2027_found == 'true' && steps.alert-cache.outputs.cache-hit != 'true'
         run: mkdir -p .alert-state && date -u +%FT%TZ > .alert-state/sent
