@@ -30,7 +30,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          NOTIFY_EMAIL: [redacted]
+          NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
           TEST_MODE: "true"
         run: python notify.py
 
@@ -38,7 +38,7 @@ jobs:
         if: github.event_name == 'schedule' && steps.check.outputs.spring_2027_found == 'true' && steps.alert-cache.outputs.cache-hit != 'true'
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          NOTIFY_EMAIL: [redacted]
+          NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
         run: python notify.py
 
       - name: Record that the alert was sent
