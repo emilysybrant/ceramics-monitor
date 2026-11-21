@@ -41,6 +41,8 @@ request = urllib.request.Request(
     headers={
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
+        "Accept": "application/json",
+        "User-Agent": "ceramics-class-monitor/1.0",
     },
     method="POST",
 )
